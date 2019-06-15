@@ -84,7 +84,7 @@ for file in files_from_dir:
     for i, reg in enumerate(regex):
         m = reg.match(filename)
         if m:
-            print("Filename matches the regex #%d" % i+1)
+            print("Filename matches the regex #%d" % (i+1))
             break
 
     if not m:

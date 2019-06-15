@@ -6,7 +6,7 @@ import json
 # Defaults
 from_path = os.path.expanduser("~/Downloads/")
 to_path = os.path.expanduser("~/Videos/Plex/")
-regex = r"^\[(?P<dist>\w+)\]\s?(?P<show>[A-za-z0-9\s\-\(\)]+?)\s?S?(?P<season>\d+)?\s?\-\s?(?P<episode>\d+\.?\d+?)v?(?P<version>\d+)?\s?\[(?P<quality>\d+p)\]\.?(?P<ext>[a-z0-9\-]+)?$"
+regex = r"^\[(?P<dist>\w+)\]\s?(?P<show>[A-za-z0-9\s\-\(\)\!\']+?)\s?S?(?P<season>\d+)?\s?\-\s?(?P<episode>\d+\.?\d+?)v?(?P<version>\d+)?\s?\[(?P<quality>\d+p)\]\.?(?P<ext>[a-z0-9\-]+)?$"
 
 # Load configs
 try:
@@ -15,15 +15,26 @@ try:
         config = json.load(json_config)
         if "from_path" in config.keys():
             from_path = os.path.expanduser(config["from_path"])
+            print("Loaded 'from_path' from the config file.")
+        else:
+            print("Using the default 'from_path'.")
 
         if "to_path" in config.keys():
             to_path = os.path.expanduser(config["to_path"])
+            print("Loaded 'to_path' from the config file.")
+        else:
+            print("Using the default 'to_path'.")
 
         if "regex" in config.keys():
-            regex = os.path.expanduser(config["regex"])
+            regex = list(config["regex"])
+            print("Loaded 'regex' from the config file.")
+        else:
+            print("Using the default 'regex'.")
+
+        print("Config file 'config.json' loaded successfully.")
 
 except Exception as e:
-    print("Couldn't load 'config.json'. Will assume program defaults.")
+    print("Couldn't load one or more parameters from 'config.json'. Will assume program defaults.")
     print(e)
 
 # Validate configs
@@ -35,9 +46,13 @@ if not os.path.exists(to_path):
     print("to_path '%s' does not exist." % to_path)
     quit()
 
-reg = None
 try:
-    reg = re.compile(regex)
+    if type(regex) is not list:
+        regex = [regex]
+
+    for i, reg in enumerate(regex):
+        regex[i] = re.compile(reg)
+
 except:
     print("regex is not a valid python regular expression.")
     quit()
@@ -65,15 +80,20 @@ for file in files_from_dir:
     filename = os.fsdecode(file)
     print("\nFile: '%s'" % filename)
 
-    m = reg.match(filename)
+    m = None
+    for i, reg in enumerate(regex):
+        m = reg.match(filename)
+        if m:
+            print("Filename matches the regex #%d" % i+1)
+            break
+
     if not m:
-        print("File doesn't match.")
+        print("Filename doesn't match any regex.")
         continue
 
     season = m.group("season") if m.group("season") is not None else '1'
     if is_float(m.group("episode")):
         season = '0'
-
     e = {
         "show": m.group("show"),
         "episode": m.group("episode").zfill(2),

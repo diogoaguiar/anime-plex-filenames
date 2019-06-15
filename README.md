@@ -6,12 +6,14 @@ Python script used to rename anime episodes from HorribleSubs to the Plex format
 - Pyhton 3.7+
 
 ### Configuration
-Edit the `config.json` and set the fields to match your system and usage:
-- **regex**: The regex used to parse the original filenames.
-    - The script expects the named groups: `show`, `season`, `episode` and `ext`.
-    - The regex is set to match HorribleSubs file format, only. You will need to adapt it to work with other website releases.
-- **from_path**: Path to the directory where the files that need processing are located.
-- **to_path**: Path to the directory of the Plex library, where the shows folders are located.
+1. Create a copy of the `config.json.example` and rename it to `config.json`. 
+2. Edit the `config.json` and set the fields to match your system and usage:
+    - **regex**: The regex used to parse the original filenames.
+        - The script expects the named groups: `show`, `season`, `episode` and `ext`.
+        - Also supports a list with various regex entries. The script will try to match the filenames with each of the entries, in the given order, until it finds a match.
+        - The given example is set to match HorribleSubs filenames only. You will need to modify the regex (or append new entries) to work with other website releases.
+    - **from_path**: Path to the directory where the files that need processing are located.
+    - **to_path**: Path to the directory of the Plex library, where the shows folders are located.
 
 ## Usage
 Run the python script `move-and-rename.py`, like so:

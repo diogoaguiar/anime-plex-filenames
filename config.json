@@ -1,0 +1,5 @@
+{
+    "regex": "^\\[(?P<dist>\\w+)\\]\\s?(?P<show>[A-za-z0-9\\s\\-\\(\\)]+?)\\s?S?(?P<season>\\d+)?\\s?\\-\\s?(?P<episode>\\d+\\.?\\d+?)v?(?P<version>\\d+)?\\s?\\[(?P<quality>\\d+p)\\]\\.?(?P<ext>[a-z0-9\\-]+)?$",
+    "from_path": "~/Downloads/",
+    "to_path": "/media/sda1/Media/Anime/"
+}

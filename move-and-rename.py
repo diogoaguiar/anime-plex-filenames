@@ -2,6 +2,7 @@ import re
 import os
 import shutil
 import json
+import subprocess
 
 # Defaults
 from_path = os.path.expanduser("~/Downloads/")
@@ -75,6 +76,7 @@ from_dir = os.fsencode(from_path)
 files_from_dir = os.listdir(from_dir)
 
 print("There are %d files in '%s'." % (len(files_from_dir), from_path))
+files_moved = 0
 
 for file in files_from_dir:
     filename = os.fsdecode(file)
@@ -115,8 +117,12 @@ for file in files_from_dir:
         print("Moving file '%s' -> '%s'" % (from_path + filename, plex_full_filename))
         shutil.move(from_path + filename, plex_full_filename)
         print("File moved successfully.")
+        files_moved += 1
     except Exception as e:
         print("Error moving the file.")
         print(e)
 
+if files_moved > 0:
+    message = "%d filed where moved into the Plex library" % files_moved
+    subprocess.call(["notify-send", "Plex Move and Rename", message])
 print("Done.")
